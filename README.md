@@ -1,8 +1,8 @@
 # javaScript
 
-
-ES6 AND ES5
-
+  \\ forEach, map, filter, reduce
+  
+  ES6 AND ES5 
     \ String in ES6
     \ Arrow function
     \ Destructturing
