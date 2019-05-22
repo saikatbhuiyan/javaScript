@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Reflect API </title>
+</head>
+<body>
+
+    <h1 style= "color: rgba(63, 189, 141, 0.733)">Reflect API</h1>
+    
+    <script>
+
+        /*
+
+Metaprogramming
+Metaprogramming means that you’re able to change (parts of) the
+behavior of the underyling language – JavaScript in this case. This of
+course is a powerful feature as it allows you to influence the way your code
+is executed. The Reflect API (like Symbols and Proxies) are important
+additions which help you with Metaprogramming – something that wasn’t
+really possible in JavaScript before.
+
+
+What is the Reflect API?
+The Reflect API could be described as a collection or “central place” which
+houses all kind of object and function related functions (for creation,
+property management etc.). Some of the functionalities added on the
+Reflect object where available before on the Object object.
+But the goal for the future is, to have on central place to store all those
+methods – the Reflect Object/ API.
+Therefore, the Reflect API provides useful methods to create, manipulate
+and query objects and functions in your JavaScript project.
+
+        */
+
+
+
+
+        class Person {
+            constructor(name, age){
+                this.name = name;
+                this.age = age;
+            }
+
+            greet(prefix){
+                console.log(`${prefix} Hello, I am ${this.name}` );
+            }
+        }
+
+        
+        function TopObj() {
+                this.job = job;
+            }
+
+        let p = Reflect.construct(Person, ['Sami', 24], TopObj);
+        let p2 = Reflect.construct(Person, ['Sami', 24]);
+        console.log(p.__proto__ == TopObj.prototype);
+        console.log(p.__proto__ == Person.prototype);  
+
+        Reflect.apply(p2.greet, { name:'sajid' }, ['-----']);
+        Reflect.apply(p2.greet, p, ['-----']);
+
+        // Reflect with Prototypes
+
+        class Person2 {
+            constructor() {
+                this.name = 'Saikat';
+            }
+        }
+
+        let person = new Person();
+
+        Person.prototype.age = 24;
+
+        let proto = {
+            age: 30,
+            greet(){
+                console.log('Hello');
+            }
+        };
+
+        Reflect.setPrototypeOf(person, proto);
+        console.log(Reflect.getPrototypeOf(person));
+
+        Reflect.apply(person.greet, null, []);
+
+
+        // Accessing Properties with Reflect
+
+        class Person3 {
+            constructor(name, age){
+                this._name = name;
+                this.age = age;
+            }
+
+            get name() {
+                return this._name;
+            }
+
+            set name(value) {
+                this._name = name;
+            }
+        }
+
+        let mum = {
+                _name: 'MUM'
+            };
+        
+        let person2 = new Person3('sami',24);
+        // Reflect.set(person2, 'name', 'sajid');
+        Reflect.set(person2, 'name', mum);
+        console.log(Reflect.get(person2, 'name', mum)); // MUM
+
+        console.log(Reflect.has(person2, 'name')); // true
+
+        // Analyzing Objects with Reflect.ownKeys    
+        console.log(Reflect.ownKeys(person2)); // ["_name", "age"]
+
+        // Creating  Deleting Properties with Reflect
+        
+        Reflect.defineProperty(person2,'hobbies', {
+            writable: true,
+            value: ['Sports','Cooking'],
+            configurable: true
+        });
+        
+        console.log(Reflect.ownKeys(person2)); // ["_name", "age", "hobbies"]
+        console.log(person2.hobbies); //["Sports", "Cooking"]
+
+        person2.hobbies = ['Nothing'];
+        console.log(person2.hobbies); // ['Nothing']
+
+        // delete person2.age;
+        Reflect.deleteProperty(person2, 'age');
+        console.log(person2.age) // undefined
+
+        // lock the object (we can't add any property)
+        console.log(Reflect.isExtensible(person2)); // true (not lock)
+        Reflect.preventExtensions(person2);
+        console.log(Reflect.isExtensible(person2)); // false (locked)
+
+
+
+    </script>
+</body>
+</html>
