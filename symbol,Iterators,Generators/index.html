@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Symbol</title>
+</head>
+<body>
+
+    <h1>Symbol Iterator Generators </h1>
+    <script>
+        const idSym = Symbol('id');
+        let user = {
+            id     :  9451,
+            name   :  'saikat',
+            city   :  'dhaka',
+            age    :  59,
+            [idSym]:  483
+        };
+
+
+
+        const s1 = Symbol('age');
+        const s2 = Symbol('age');
+        console.log(s1 == s2); // false
+
+        
+        let person1 = {
+            name: 'MAX'
+        };
+
+
+        function makeAge1(person){
+            let ageSymbol = Symbol.for('age');
+            person[ageSymbol] = 24;
+        }
+
+        makeAge1(person1);
+
+        console.log(person1[s2]); // undefined
+
+
+        const sy1 = Symbol.for('age');
+        const sy2 = Symbol.for('age');
+        console.log(sy1 == sy2); // true
+
+        let person = {
+            name: 'MAX',
+            age : 30
+
+        };
+
+        function makeAge(person){
+            let ageSymbol = Symbol.for('age');
+            person[ageSymbol] = 24;
+        }
+
+        makeAge(person);
+
+        console.log(person[sy2]); // 24
+        console.log(person['age']); // 30
+
+
+
+        // well-known symbols
+
+        let num = [1,2,3,4];
+
+        num[Symbol.toPrimitive] = function(){
+            return 9999;
+        }
+
+        console.log(num + 2);
+
+
+
+
+
+
+        /***************Iterator*****************/
+        /* All object know how to access values in 
+        collections one at a time */
+
+        // let ar = [1,2,3];
+
+        // let it = ar[Symbol.iterator]();
+
+        // console.log(it.next());
+        // console.log(it.next());
+        // console.log(it.next());
+        // console.log(it.next());
+
+
+        let ar = [1,2,3];
+
+        // we can change the behavior   (Symbol.iterator = give us unique id)
+        ar[Symbol.iterator] = function() {
+            let nextVlu = 5;
+            return {
+                next: function() {
+                    nextVlu++;
+                    return {
+                        done: nextVlu > 15 ? true : false,
+                        value : nextVlu
+                    };
+                }
+            };
+        }
+        
+        for (let ele of ar){
+            console.log(ele);
+        }
+
+
+
+        // creating a custom iterateable object
+
+        let person2 = {
+            mame: 'Max',
+            hobbies: ['Sports', 'Cooking'],
+            [Symbol.iterator]: function() {
+                let i = 0;
+                let hobbies = this.hobbies;
+                return {
+                    next: function() {
+
+                        let value = hobbies[i];
+                        i++;
+
+                        return {
+                            done: i > hobbies.length ? true : false,
+                            value: value
+                        }
+                    }
+                };
+            }
+        }
+
+        for (let hobby of person2){
+            console.log(hobby);
+        }
+
+
+
+
+
+        /***************Generators*****************/
+        /*  Generators is a function which does not nesserly run to the 
+            end when excuted (yield certain values each time you call it
+            yield to next value)
+        */
+
+        function *select(){
+            yield 'House';
+            yield 'Garage';
+        }
+
+        let it = select();
+        console.log(it.next());
+        console.log(it.next());
+        console.log(it.next());
+        console.log(it.next());
+
+        function *gen(end) {
+            for (let i = 0; i < end; i++){
+                try {
+                    yield i;
+                } catch (e){
+                    console.log(e);
+                }
+
+            }
+        }
+
+        let it2 = gen(4);
+
+        console.log(it2.next());
+        console.log(it2.throw('An error ocurred'));
+        console.log(it2.return('error'));
+        console.log(it2.next());
+        console.log(it2.next());
+        console.log(it2.next());
+        console.log(it2.next());
+        console.log(it2.next());
+
+
+    </script>
+    
+</body>
+</html>
