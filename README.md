@@ -13,5 +13,8 @@
     \ Map
     \ class in ES6
     \ classes(also called superclass) & subclasses in ES6
-    
+  
+  \\ asynchronous
+  \\Symbol,Iterators,Generators
+  
   \\ CALCULATOR 
