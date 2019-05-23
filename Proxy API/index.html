@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title> Proxy </title>
+</head>
+<body>
+
+    <h1 style="color: rgb(43, 220, 226)">Proxy API</h1>
+    <script>
+        let person = {
+            age: 27,
+            name: 'saikat'
+        };
+
+        let handler = {
+            get: function(target, name) {
+                return name in target ? target[name] : 'Non';
+            },
+
+            set: function(target, property, value) {
+                if(value.length >= 2){
+                    Reflect.set(target, property, value);
+                }
+            }
+        };
+
+        // let proxy = new Proxy(person, handler);
+        // console.log(proxy.age);
+
+        // proxy.name = 's';
+        // proxy.name = 'sami';
+        // console.log(proxy.name);
+
+        // Using Proxies as Prototypes
+        let proxy = new Proxy({}, handler);
+        Reflect.setPrototypeOf(person, proxy);
+        console.log(person.hobbies); // Non
+
+
+        // Wrapping Functions
+        function log(message){
+            console.log('Log entry created, message: ' + message);
+
+        }
+
+        let handler2 = {
+            apply: function(target, thisArg, argumentsList){
+                if(argumentsList.length == 1){
+                    return Reflect.apply(target, thisArg, argumentsList);
+                }else{
+                    console.log('over');
+                }
+            }
+        };
+
+        let proxy2 = new Proxy(log, handler2);
+        proxy2('Hello');
+        proxy2('Hello', 1); // nothing
+
+
+        let person3 = {
+            age: 27,
+            name: 'saikat bhuiyan'
+        };
+
+        let handler3 = {
+            get: function(target, property){
+                return Reflect.get(target, property);
+            }
+        };
+
+        let {proxy3, revoke} = Proxy.revocable(person3, handler3);
+        revoke();
+        console.log(proxy3.age);
+    </script>
+    
+</body>
+</html>
